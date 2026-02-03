@@ -14,11 +14,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // In-memory "Database"
 let matches = [
     {
-        title: "Gujarat Giants vs Delhi Capitals",
-        subtitle: "WPL Eliminator • Today 7:30 PM",
-        imageUrl: "https://images.unsplash.com/photo-1531415074984-6a8820809c76?q=80&w=1000&auto=format&fit=crop",
-        streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // Reliable test stream
-        isLive: true,
+        title: "🔴 TEST STREAM (Guaranteed Working)",
+        subtitle: "Test Video • Big Buck Bunny",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Big_buck_bunny_poster_big.jpg/800px-Big_buck_bunny_poster_big.jpg",
+        streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        isLive: false,
         category: "Cricket",
         headers: {}
     },
