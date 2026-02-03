@@ -14,20 +14,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // In-memory "Database"
 let matches = [
     {
-        title: "IND vs AUS | Finals",
-        subtitle: "Live from Server",
-        imageUrl: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop",
-        streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        title: "Gujarat Giants vs Delhi Capitals",
+        subtitle: "WPL Eliminator • Today 7:30 PM",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Women%27s_Premier_League_%28cricket%29_logo.svg/1200px-Women%27s_Premier_League_%28cricket%29_logo.svg.png",
+        streamUrl: "https://d1388k3o9m3651.cloudfront.net/v1/master/9a06143c7b8979d39e836365b2632b8aa83f619e/dm-intro/intro.m3u8", // Placeholder
         isLive: true,
-        category: "Cricket"
+        category: "Cricket",
+        headers: {}
     },
     {
-        title: "Big Buck Bunny",
-        subtitle: "Animated Movie",
-        imageUrl: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2000&auto=format&fit=crop",
-        streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        isLive: false,
-        category: "Movies"
+        title: "DD Sports (Live)",
+        subtitle: "Live TV Channel",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/DD_Sports_logo.svg/1200px-DD_Sports_logo.svg.png",
+        streamUrl: "https://d1388k3o9m3651.cloudfront.net/v1/master/9a06143c7b8979d39e836365b2632b8aa83f619e/dm-intro/intro.m3u8",
+        isLive: true,
+        category: "Live TV"
     }
 ];
 
