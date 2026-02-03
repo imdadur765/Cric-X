@@ -74,7 +74,11 @@ function parseM3U(data, sourceName) {
             const sportsKeywords = ['cricket', 'sony', 'ten sports', 'astro', 'sky sports', 'bein', 'eurosport', 'dd sports'];
             const isSports = sportsKeywords.some(k => nameLower.includes(k) || groupLower.includes('sport'));
 
-            if (isPriority || isSports || sourceName === "India - Full") {
+            // VALIDATION: Ensure title and URL are not empty and are valid
+            const isValidUrl = line.startsWith('http');
+            const hasTitle = currentTitle.length > 0;
+
+            if ((isPriority || isSports || sourceName === "India - Full") && isValidUrl && hasTitle) {
                 let category = "Entertainment";
                 if (isPriority || isSports) category = "Cricket";
                 else if (nameLower.includes('news') || groupLower.includes('news')) category = "News";
@@ -84,7 +88,7 @@ function parseM3U(data, sourceName) {
                 matches.push({
                     title: currentTitle,
                     subtitle: `${sourceName} • ${isPriority ? '★ Premium' : 'Live'}`,
-                    imageUrl: currentLogo,
+                    imageUrl: currentLogo || "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?q=80&w=500&auto=format&fit=crop",
                     streamUrl: line,
                     isLive: true,
                     category: category,

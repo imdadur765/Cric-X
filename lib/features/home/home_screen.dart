@@ -99,7 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("CRIC-X TV", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+          title: Flexible(
+            child: Text(
+              "CRIC-X TV",
+              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           actions: [
             IconButton(icon: const Icon(Icons.search), onPressed: () {}),
             IconButton(
@@ -204,7 +210,11 @@ class _FeaturedCarousel extends StatelessWidget {
         height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          image: DecorationImage(image: NetworkImage(match.imageUrl), fit: BoxFit.cover),
+          image: DecorationImage(
+            image: NetworkImage(match.imageUrl),
+            fit: BoxFit.cover,
+            onError: (e, s) => const Icon(Icons.broken_image),
+          ),
           boxShadow: [BoxShadow(color: Colors.blueAccent.withOpacity(0.2), blurRadius: 12, offset: const Offset(0, 4))],
         ),
         child: Container(
@@ -304,6 +314,7 @@ class _HorizontalList extends StatelessWidget {
                   image: NetworkImage(match.imageUrl),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
+                  onError: (e, s) => const Icon(Icons.broken_image),
                 ),
               ),
               child: Stack(
@@ -409,7 +420,17 @@ class _VerticalList extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(match.imageUrl, width: 100, height: double.infinity, fit: BoxFit.cover),
+                  child: Image.network(
+                    match.imageUrl,
+                    width: 100,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 100,
+                      color: Colors.grey[900],
+                      child: const Icon(Icons.broken_image, color: Colors.white24),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
