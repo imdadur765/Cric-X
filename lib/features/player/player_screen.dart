@@ -14,8 +14,10 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  late VideoPlayerController _videoPlayerController;
+  VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -24,29 +26,57 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future<void> _initializePlayer() async {
-    _videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoUrl),
-      httpHeaders: widget.headers ?? {},
-    );
-    await _videoPlayerController.initialize();
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      autoPlay: true,
-      looping: false,
-      aspectRatio: 16 / 9,
-      errorBuilder: (context, errorMessage) {
-        return Center(
-          child: Text(errorMessage, style: const TextStyle(color: Colors.white)),
-        );
-      },
-    );
-    setState(() {});
+    try {
+      _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.videoUrl),
+        httpHeaders: widget.headers ?? {},
+      );
+      await _videoPlayerController!.initialize();
+
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController!,
+        autoPlay: true,
+        looping: false,
+        aspectRatio: _videoPlayerController!.value.aspectRatio,
+        allowFullScreen: true,
+        allowMuting: true,
+        showControls: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Stream load karne mein error hua.\n\n$e";
+      });
+    }
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
+    _videoPlayerController?.dispose();
     _chewieController?.dispose();
     super.dispose();
   }
@@ -60,12 +90,52 @@ class _PlayerScreenState extends State<PlayerScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: Center(
-        child: _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
+        child: _isLoading
+            ? const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Colors.blueAccent),
+                  SizedBox(height: 16),
+                  Text("Stream load ho raha hai...", style: TextStyle(color: Colors.white70)),
+                ],
+              )
+            : _errorMessage != null
+            ? Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.redAccent, size: 64),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Stream Play Nahi Ho Raha",
+                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.white60, fontSize: 12),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: _initializePlayer,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("Retry"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : _chewieController != null
             ? AspectRatio(
-                aspectRatio: 16 / 9,
+                aspectRatio: _videoPlayerController!.value.aspectRatio,
                 child: Chewie(controller: _chewieController!),
               )
-            : const CircularProgressIndicator(),
+            : const Text("Player initialize nahi ho paya", style: TextStyle(color: Colors.white70)),
       ),
     );
   }

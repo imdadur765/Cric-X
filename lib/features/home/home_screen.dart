@@ -99,12 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Flexible(
-            child: Text(
-              "CRIC-X TV",
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2),
-              overflow: TextOverflow.ellipsis,
-            ),
+          title: Text(
+            "CRIC-X TV",
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            overflow: TextOverflow.ellipsis,
           ),
           actions: [
             IconButton(icon: const Icon(Icons.search), onPressed: () {}),
