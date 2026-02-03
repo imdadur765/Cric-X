@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CricX Admin Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0f172a;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #38bdf8;
+            text-align: center;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #020617;
+            color: white;
+        }
+
+        button {
+            background: #38bdf8;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            width: auto;
+            padding: 5px 10px;
+            margin: 0;
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding: 10px 0;
+        }
+
+        img {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .info {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⚡ CricX Control Room</h1>
+
+        <!-- Add Match Form -->
+        <div class="card">
+            <h3>Add New Stream</h3>
+            <form action="/admin/add" method="POST">
+                <label>Title (e.g., IND vs PAK)</label>
+                <input type="text" name="title" required placeholder="Enter Match Title">
+
+                <label>Subtitle (e.g., Live Now)</label>
+                <input type="text" name="subtitle" required placeholder="Enter Subtitle">
+
+                <label>Image URL (Poster)</label>
+                <input type="text" name="imageUrl" required placeholder="https://...">
+
+                <label>Stream URL (m3u8)</label>
+                <input type="text" name="streamUrl" required placeholder="https://...m3u8">
+
+                <label>Custom Headers (JSON) - Optional</label>
+                <textarea name="headers" rows="3" placeholder='{"Referer": "https://willow.tv/"}'
+                    style="width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #334155; background: #020617; color: white; font-family: monospace;"></textarea>
+
+                <label>Category</label>
+                <select name="category">
+                    <option value="Cricket">Cricket 🏏</option>
+                    <option value="Movies">Movies 🎬</option>
+                    <option value="Live TV">Live TV 📺</option>
+                </select>
+
+                <label>Status</label>
+                <select name="isLive">
+                    <option value="true">Live 🔴</option>
+                    <option value="false">Highlight ⏯️</option>
+                </select>
+
+                <button type="submit">Publish to App 🚀</button>
+            </form>
+        </div>
+
+        <!-- Current Matches List -->
+        <div class="card">
+            <h3>Active Streams (${matches.length})</h3>
+            <% matches.forEach((match, index)=> { %>
+                <div class="match-item">
+                    <img src="<%= match.imageUrl %>" alt="thumb">
+                    <div class="info">
+                        <strong>
+                            <%= match.title %>
+                        </strong>
+                        <span style="background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.8em;">
+                            <%= match.category || 'Cricket' %>
+                        </span><br>
+                        <small style="color: #94a3b8">
+                            <%= match.subtitle %>
+                        </small>
+                    </div>
+                    <form action="/admin/delete" method="POST" style="margin:0;">
+                        <input type="hidden" name="index" value="<%= index %>">
+                        <button type="submit" class="delete-btn">Delete 🗑️</button>
+                    </form>
+                </div>
+                <% }) %>
+                    <% if (matches.length===0) { %>
+                        <p style="text-align: center; color: #64748b;">No active streams.</p>
+                        <% } %>
+        </div>
+    </div>
+</body>
+
+</html>
