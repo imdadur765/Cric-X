@@ -3,7 +3,7 @@ import 'package:cric_x/core/source_parser.dart';
 import 'package:cric_x/features/home/models/match_model.dart';
 import 'package:cric_x/features/player/player_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,14 +23,20 @@ class _HomeScreenState extends State<HomeScreen> {
     _matchesFuture = _linkService.fetchMatches();
   }
 
+  Future<void> _refreshMatches() async {
+    setState(() {
+      _matchesFuture = _linkService.fetchMatches();
+    });
+  }
+
   void _showParserDialog(BuildContext context) {
     final TextEditingController urlController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).cardTheme.color,
-          title: const Text("Test Stream Parser", style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color(0xFF1E293B),
+          title: Text("Test Stream Parser", style: GoogleFonts.outfit(color: Colors.white)),
           content: TextField(
             controller: urlController,
             style: const TextStyle(color: Colors.white),
@@ -93,34 +99,20 @@ class _HomeScreenState extends State<HomeScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Row(
-            children: [
-              const Icon(Icons.sports_cricket, color: Colors.blueAccent),
-              const SizedBox(width: 8),
-              Text(
-                'CRIC STREAM',
-                style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Colors.white.withOpacity(0.9)),
-              ),
-            ],
-          ),
+          title: Text("CRIC-X", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
           actions: [
+            IconButton(icon: const Icon(Icons.search), onPressed: () {}),
             IconButton(
-              icon: const Icon(Icons.bug_report, color: Colors.orange),
-              tooltip: "Test Parser",
+              icon: const Icon(Icons.bug_report, color: Colors.blueAccent),
               onPressed: () => _showParserDialog(context),
             ),
-            const SizedBox(width: 8),
-            const CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.person, size: 20, color: Colors.white),
-            ),
-            const SizedBox(width: 16),
           ],
           bottom: const TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
             indicatorColor: Colors.blueAccent,
-            labelColor: Colors.blueAccent,
-            unselectedLabelColor: Colors.white60,
+            indicatorWeight: 3,
+            labelStyle: TextStyle(fontWeight: FontWeight.bold),
             tabs: [
               Tab(text: "Cricket 🏏"),
               Tab(text: "Movies 🎬"),
@@ -135,34 +127,44 @@ class _HomeScreenState extends State<HomeScreen> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No Matches Found"));
+            if (snapshot.hasError || !snapshot.hasData) {
+              return const Center(
+                child: Text("Error loading streams", style: TextStyle(color: Colors.white70)),
+              );
             }
 
             final allMatches = snapshot.data!;
 
-            // Helper to filter matches
             Widget buildCategoryView(String category) {
               final matches = allMatches.where((m) => m.category == category).toList();
+
               if (matches.isEmpty) {
-                return Center(child: Text("No content in $category"));
+                return const Center(
+                  child: Text("No channels available", style: TextStyle(color: Colors.white60)),
+                );
               }
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+              return RefreshIndicator(
+                onRefresh: _refreshMatches,
+                backgroundColor: const Color(0xFF0F172A),
+                color: Colors.blueAccent,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   children: [
                     const SizedBox(height: 16),
-                    // Show first item as Featured
-                    if (matches.isNotEmpty) _FeaturedCarousel(match: matches[0]),
-                    const SizedBox(height: 24),
-                    _SectionHeader(title: "Trending in $category", onViewAll: () {}),
+                    if (category == "Cricket") ...[
+                      _SectionHeader(title: "Featured Matches", onViewAll: () {}),
+                      _FeaturedCarousel(match: matches[0]),
+                      const SizedBox(height: 20),
+                    ],
+                    _SectionHeader(title: category == "Cricket" ? "Trending Now" : "All Channels", onViewAll: () {}),
                     _HorizontalList(matches: matches),
-                    const SizedBox(height: 24),
-                    _SectionHeader(title: "All $category", onViewAll: () {}),
+                    const SizedBox(height: 20),
+                    _SectionHeader(title: "Recommended", onViewAll: () {}),
                     _VerticalList(matches: matches),
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 100),
                   ],
-                ).animate().fadeIn(duration: 500.ms),
+                ),
               );
             }
 
@@ -283,14 +285,17 @@ class _HorizontalList extends StatelessWidget {
               ),
             ),
             child: Container(
-              width: 220,
+              width: 240,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).cardTheme.color,
+                borderRadius: BorderRadius.circular(16),
+                color: const Color(0xFF1E293B),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 10, offset: const Offset(0, 5)),
+                ],
                 image: DecorationImage(
                   image: NetworkImage(match.imageUrl),
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
                 ),
               ),
               child: Stack(
@@ -300,37 +305,58 @@ class _HorizontalList extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      height: 60,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black.withOpacity(0.9)],
+                          colors: [Colors.transparent, Colors.black.withOpacity(0.95)],
                         ),
-                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                       ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            match.title,
+                            match.title.toUpperCase(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.white,
+                              letterSpacing: 1.1,
+                            ),
                           ),
-                          Text(match.subtitle, style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                          Text(match.subtitle, style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.7))),
                         ],
                       ),
                     ),
                   ),
                   if (match.isLive)
                     Positioned(
-                      top: 8,
-                      right: 8,
+                      top: 10,
+                      left: 10,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
-                        child: const Text("LIVE", style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold)),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: Colors.white24),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                            ),
+                            const SizedBox(width: 4),
+                            const Text("LIVE", style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
                 ],

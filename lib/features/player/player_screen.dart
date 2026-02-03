@@ -56,16 +56,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        title: Text(widget.title, style: const TextStyle(fontSize: 16)),
         backgroundColor: Colors.transparent,
-        title: Text(widget.title),
-        leading: const BackButton(color: Colors.white),
       ),
-      body: SafeArea(
-        child: Center(
-          child: _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
-              ? Chewie(controller: _chewieController!)
-              : const CircularProgressIndicator(),
-        ),
+      body: Center(
+        child: _chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
+            ? AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Chewie(controller: _chewieController!),
+              )
+            : const CircularProgressIndicator(),
       ),
     );
   }
