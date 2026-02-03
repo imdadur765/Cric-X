@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:cric_x/features/home/models/match_model.dart';
 
 class LinkService {
-  // Using direct Wi-Fi IP of the laptop.
-  // Ensure Phone and Laptop are on the SAME Wi-Fi.
-  static const String _configUrl = "http://10.224.198.174:3000/matches";
+  // LIVE CLOUD SERVER ☁️
+  // Now your app works anywhere (No Wi-Fi needed!)
+  static const String _configUrl = "https://cric-x.onrender.com/matches";
 
   // Fallback data if internet fails
   static List<MatchModel> get fallbackMatches => MatchModel.dummyMatches;

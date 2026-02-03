@@ -87,7 +87,14 @@
 
 <body>
     <div class="container">
-        <h1>⚡ CricX Control Room</h1>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>⚡ CricX Control Room</h1>
+            <form action="/admin/scrape" method="POST" style="margin: 0; width: auto;">
+                <button type="submit"
+                    style="background: #10b981; color: white; padding: 10px 20px; border-radius: 8px;">🔄 Refresh
+                    Sources</button>
+            </form>
+        </div>
 
         <!-- Add Match Form -->
         <div class="card">

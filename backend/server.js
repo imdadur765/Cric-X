@@ -43,6 +43,8 @@ app.get('/admin', (req, res) => {
     res.render('admin', { matches: matches });
 });
 
+const { scrapeMatches } = require('./scraper');
+
 // ADMIN: Add Match
 app.post('/admin/add', (req, res) => {
     const { title, subtitle, imageUrl, streamUrl, isLive, category, headers } = req.body;
@@ -66,6 +68,22 @@ app.post('/admin/add', (req, res) => {
         headers: parsedHeaders
     });
     console.log(`[Admin] Added: ${title} (${category})`);
+    res.redirect('/admin');
+});
+
+// ADMIN: Trigger Scraper
+app.post('/admin/scrape', async (req, res) => {
+    console.log("[Admin] Triggering Scraper...");
+    const newMatches = await scrapeMatches();
+    if (newMatches.length > 0) {
+        // Option 1: Replace all (Clean Slate)
+        // matches = newMatches;
+
+        // Option 2: Append (Keep old)
+        matches = [...newMatches, ...matches];
+
+        console.log(`[Admin] Scraper added ${newMatches.length} matches.`);
+    }
     res.redirect('/admin');
 });
 
