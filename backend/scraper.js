@@ -84,18 +84,27 @@ function parseM3U(data) {
             const nameLower = currentTitle.toLowerCase();
             const groupLower = currentGroup.toLowerCase();
 
-            const isPremiumSports = sportsKeywords.some(keyword =>
+            const isSports = sportsKeywords.some(keyword =>
                 nameLower.includes(keyword) || groupLower.includes(keyword)
             );
 
-            if (isPremiumSports) {
+            if (isSports || source.name === "IPTV Org - India") {
+                // Determine Category
+                let category = "Live TV";
+
+                if (nameLower.includes('news') || groupLower.includes('news')) category = "News";
+                else if (nameLower.includes('kids') || groupLower.includes('kids') || nameLower.includes('cartoon')) category = "Kids";
+                else if (nameLower.includes('movie') || groupLower.includes('cinema')) category = "Movies";
+                else if (sportsKeywords.some(k => nameLower.includes(k) || groupLower.includes(k))) category = "Cricket";
+                else category = "Entertainment";
+
                 matches.push({
                     title: currentTitle,
-                    subtitle: `${currentGroup} • Auto-Verified`,
+                    subtitle: `${currentGroup} • Live`,
                     imageUrl: currentLogo,
                     streamUrl: line,
                     isLive: true,
-                    category: nameLower.includes('movie') ? "Movies" : "Cricket",
+                    category: category,
                     headers: {
                         "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36"
                     }

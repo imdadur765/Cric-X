@@ -96,10 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("CRIC-X", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+          title: Text("CRIC-X TV", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
           actions: [
             IconButton(icon: const Icon(Icons.search), onPressed: () {}),
             IconButton(
@@ -115,8 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
             labelStyle: TextStyle(fontWeight: FontWeight.bold),
             tabs: [
               Tab(text: "Cricket 🏏"),
+              Tab(text: "Entertainment 🎭"),
+              Tab(text: "News 📰"),
               Tab(text: "Movies 🎬"),
-              Tab(text: "Live TV 📺"),
+              Tab(text: "Kids �"),
             ],
           ),
         ),
@@ -169,7 +171,13 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             return TabBarView(
-              children: [buildCategoryView("Cricket"), buildCategoryView("Movies"), buildCategoryView("Live TV")],
+              children: [
+                buildCategoryView("Cricket"),
+                buildCategoryView("Entertainment"),
+                buildCategoryView("News"),
+                buildCategoryView("Movies"),
+                buildCategoryView("Kids"),
+              ],
             );
           },
         ),
