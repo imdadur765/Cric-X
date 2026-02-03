@@ -1,0 +1,6 @@
+@echo off
+echo Starting Backend Server...
+start cmd /k "cd backend && node server.js"
+echo Backend started.
+echo Starting Flutter App...
+flutter run
