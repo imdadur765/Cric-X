@@ -16,8 +16,8 @@ let matches = [
     {
         title: "Gujarat Giants vs Delhi Capitals",
         subtitle: "WPL Eliminator • Today 7:30 PM",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Women%27s_Premier_League_%28cricket%29_logo.svg/1200px-Women%27s_Premier_League_%28cricket%29_logo.svg.png",
-        streamUrl: "https://d1388k3o9m3651.cloudfront.net/v1/master/9a06143c7b8979d39e836365b2632b8aa83f619e/dm-intro/intro.m3u8", // Placeholder
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0z8fE_vP8K1uQyvUe2o0uR5H1o1h8v1N_ZQ&s",
+        streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // Reliable test stream
         isLive: true,
         category: "Cricket",
         headers: {}
